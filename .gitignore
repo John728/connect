@@ -1,3 +1,6 @@
+# Sensitive info
+login_info.h
+
 # Prerequisites
 *.d
 
