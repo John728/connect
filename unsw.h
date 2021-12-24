@@ -15,6 +15,9 @@
 #define TRUE    1
 #define FALSE   0
 
+#define ZID_LENGTH	8
+#define PASS_LENGTH	100
+
 int clone_folder(char *folder_name);
 int push(char *folder_name);
 int pull(char *folder_name);
