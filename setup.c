@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include "unsw.h"
 
@@ -34,7 +35,7 @@ int main() {
 	}
 
 	create_login_info_file(zid, pass);
-
+	compile_and_clean();
 }
 
 int check_zid(char *zid) {
@@ -72,7 +73,7 @@ int create_login_info_file(char *zid, char *pass) {
 	strcat(new_file, "#define ZID \"");
 	strcat(new_file, zid);
 	strcat(new_file, "\"");
-	strcat(new_file, "\n#define PASS \"");
+	strcat(new_file, "\n#define ZPASS \"");
 	strcat(new_file, pass);
 	strcat(new_file, "\"");
 
@@ -86,5 +87,23 @@ int create_login_info_file(char *zid, char *pass) {
 }
 
 int compile_and_clean() {
-
+	
+	int return_make = system("make unsw");
+	
+	if (return_make != 0) {
+		printf("There was an error compiling the program.\n");
+		printf("Please wait and then run ./setup.c again\n");
+	}
+	
+	if (remove("login_info.h") != 0) {
+        printf("There was an error in removing login_info.h\n");
+		printf("Please remove it manually to avoid security risks.\n");
+		return 1;
+	}
+	
+	printf("Successfully compiled and removed sensitive files\n");
+	system("find . ! -name 'file.txt' -type f -exec rm -f {} +");
+	printf("Removing none compiled files.\n");
+	printf("Done\n");
+    return 0;
 }
