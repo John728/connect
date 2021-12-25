@@ -1,5 +1,7 @@
+// Depends on you having:
 // apt-get install sshpass
 // apt-get install sshfs
+// apt-get install make
 
 #include <stdio.h>
 #include <stdlib.h>

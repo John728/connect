@@ -131,24 +131,59 @@ int compile_and_clean() {
 	}
 	
 	printf("Successfully compiled and removed sensitive files\n");
-	system("rm login_info.h");
-	printf("Removing non-compiled files.\n");
-
 }
 
 int move() {
 	struct stat st = {0};
 
 	if (stat("/opt/connect", &st) == -1) {
-		int mkdir_status = mkdir("/opt/connect", 0700);
+		printf("Creating folder\n");
+		system("sudo mkdir /opt/connect");
+		// int mkdir_status = mkdir("/opt/connect", 0700);
 	} else {
+		printf("Removing old files\n");
 		int remove_status = system("sudo rm -rf /opt/connect/*");
 	}
 	
+	pid_t pid;
+    extern char** environ;
+
+	// Move files into correct location
 	int move_status = system("sudo mv * /opt/connect/");
 	
-	system("rm -d ../connect");
-	
+	char* sudo_mv_argv[] = { "/bin/sudo", "mv", "*", "/opt/connect/", NULL };
+
+    if (posix_spawn(&pid, "/bin/sudo", NULL, NULL, sudo_mv_argv, environ) != 0) {
+        perror("spawn");
+        exit(1);
+        return 1;
+    }
+
+    // wait for spawned processes to finish
+    int exit_status;
+    if (waitpid(pid, &exit_status, 0) == -1) {
+        perror("waitpid");
+        exit(1);
+        return 1;
+    }
+
+	// remove current file
+	char* rsync_argv[] = { "/bin/rm", "-d", "../connect", NULL };
+
+    if (posix_spawn(&pid, "/bin/rm", NULL, NULL, rsync_argv, environ) != 0) {
+        perror("spawn");
+        exit(1);
+        return 1;
+    }
+
+    // wait for spawned processes to finish
+    int exit_status;
+    if (waitpid(pid, &exit_status, 0) == -1) {
+        perror("waitpid");
+        exit(1);
+        return 1;
+    }
+
 	printf("Moved files into /opt/\n");
 	printf("Dont forget to add to path\n");
 
