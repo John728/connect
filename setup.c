@@ -1,45 +1,67 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <ctype.h>
 
 #include "unsw.h"
 
+char *get_zid();
+char *get_zpass();
 int check_zid(char *zid);
 int check_info(char *zid, char *pass);
 int create_login_info_file(char *zid, char *pass);
 int compile_and_clean();
+int move();
 
 int main() {
 
+	char *zid = get_zid();
+	char *pass = get_zpass();
+	
+	// check pass + zid
+
+	create_login_info_file(zid, pass);
+	compile_and_clean();
+}
+
+// Returns a string from the user containing their ZID
+char *get_zid() {
+	
 	printf("Please enter your ZID: ");
+	
 	// +1 for the NULL character at the end
-	char zid[ZID_LENGTH + 1] = {'\0'};
+	char *zid = malloc(ZID_LENGTH + 1);
+	memset(zid, '\0', ZID_LENGTH + 1);
+
 	for (int i = 0; i < ZID_LENGTH; i++) {
 		scanf("%c", &zid[i]);
 	}
 	
 	if (check_zid(zid) == FALSE) {
 		printf("ZID format is incorrect\n");
-		return 1;
+		return NULL;
 	}
 
+	return zid;
+}
+
+// Returns a string from the user containing their ZPASS
+// Must be a max of 100 characters
+char *get_zpass() {
 	printf("Please enter your ZPASS: ");  
+	
 	// +1 for the NULL character at the end
-	char pass[PASS_LENGTH + 1] = {'\0'};
+	char *pass = malloc(PASS_LENGTH);
+	memset(pass, '\0', PASS_LENGTH);
+	
 	scanf("%s", pass);
-
-	if (check_info(zid, pass) == FALSE) {
-		printf("Incorrect login info\n");
-		printf("Aborting\n");
-		return 1;
-	}
-
-	create_login_info_file(zid, pass);
-	compile_and_clean();
+	
+	return pass;
 }
 
 int check_zid(char *zid) {
-	return TRUE;
 	if (strlen(zid) != ZID_LENGTH) {
 		return FALSE;
 	}
@@ -49,6 +71,11 @@ int check_zid(char *zid) {
 	}
 	
 	// Check the other 7 characters are numbers
+	for (int i = 0; i < ZID_LENGTH - 1; i++) {
+		if (isdigit(zid[i]) == FALSE) {
+			return FALSE;
+		}
+	}
 
 	return TRUE;
 }
@@ -102,8 +129,21 @@ int compile_and_clean() {
 	}
 	
 	printf("Successfully compiled and removed sensitive files\n");
-	system("find . ! -name 'file.txt' -type f -exec rm -f {} +");
-	printf("Removing none compiled files.\n");
-	printf("Done\n");
-    return 0;
+	system("rm login_info.h");
+	printf("Removing non-compiled files.\n");
+
+}
+
+int move() {
+	struct stat st = {0};
+
+	if (stat("/opt/connect", &st) == -1) {
+		int mkdir_status = mkdir("/opt/connect", 0700);
+	} else {
+		int remove_status = system("sudo rm -rf /opt/connect/*");
+	}
+	
+	int move_status = system("sudo mv -a * /opt/connect/");
+
+	return 0;
 }
