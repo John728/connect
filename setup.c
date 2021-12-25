@@ -146,6 +146,11 @@ int move() {
 	}
 	
 	int move_status = system("sudo mv * /opt/connect/");
+	
+	system("rm -d ../connect");
+	
+	printf("Moved files into /opt/\n");
+	printf("Dont forget to add to path\n");
 
 	return 0;
 }
