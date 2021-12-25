@@ -24,6 +24,7 @@ int main() {
 
 	create_login_info_file(zid, pass);
 	compile_and_clean();
+	move();
 }
 
 // Returns a string from the user containing their ZID
@@ -144,7 +145,7 @@ int move() {
 		int remove_status = system("sudo rm -rf /opt/connect/*");
 	}
 	
-	int move_status = system("sudo mv -a * /opt/connect/");
+	int move_status = system("sudo mv * /opt/connect/");
 
 	return 0;
 }
