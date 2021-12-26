@@ -157,7 +157,7 @@ int append_path() {
 
 	char path_line[] = "\nexport PATH=$PATH:/opt/connect/";
 	
-	system("echo export PATH=$PATH:/opt/connect/ >> ~/.profile");
+	system("echo 'export PATH=$PATH:/opt/connect/' >> ~/.profile");
 
 	return 1;
 }
