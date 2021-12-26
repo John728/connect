@@ -22,7 +22,7 @@ int clone_folder(char* folder_name)
     strcat(command, folder_name);
 
     // rsync -avW -e ssh z5368143@login.cse.unsw.edu.au:/tmp_amd/reed/export/reed/4/z5368143/COMP1531 ./tmp
-    char* rsync_argv[] = { "/bin/sshpass", "-p", ZPASS, "rsync", "-avW", "-progress", "--delete", "-e", "ssh", command, "./", NULL };
+    char* rsync_argv[] = { "/bin/sshpass", "-p", ZPASS, "rsync", "-avW", "-q", "--delete", "-e", "ssh", command, "./", NULL };
 
     if (posix_spawn(&pid, "/bin/sshpass", NULL, NULL, rsync_argv, environ) != 0) {
         perror("spawn");
