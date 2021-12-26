@@ -4,9 +4,11 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <ctype.h>
+#include <limits.h>
 
 #include "unsw.h"
 
+int download_dependencies();
 char *get_zid();
 char *get_zpass();
 int check_zid(char *zid);
@@ -16,6 +18,8 @@ int compile_and_clean();
 int move();
 
 int main() {
+	
+	download_dependencies();
 
 	char *zid = get_zid();
 	char *pass = get_zpass();
@@ -25,6 +29,18 @@ int main() {
 	create_login_info_file(zid, pass);
 	compile_and_clean();
 	move();
+}
+
+int download_dependencies() {
+	// apt-get install sshpass
+	// apt-get install sshfs
+	// apt-get install make
+
+	system("apt-get install sshpass");
+	system("apt-get install sshfs");
+	system("apt-get install make");
+
+	return 1;
 }
 
 // Returns a string from the user containing their ZID
@@ -143,19 +159,20 @@ int move() {
 	
 	pid_t pid;
     extern char** environ;
+
+	// Move files into correct location
+	//int move_status = system("sudo mv * /opt/connect/");
 	
 	char cwd[PATH_MAX];
-    if (getcwd(cwd, sizeof(cwd)) != NULL) {
-        printf("Current working dir: %s\n", cwd);
+	memset(cwd, '\0', PATH_MAX);
+	if (getcwd(cwd, sizeof(cwd)) != NULL) {
+		printf("Current working dir: %s\n", cwd);
     } else {
         perror("getcwd() error");
         return 1;
     }
-	// strcat(cwd, "/");
-
-	// Move files into correct location
-	// int move_status = system("sudo mv * /opt/connect/");
-	
+	strcat(cwd, "/");
+		
 	char* sudo_mv_argv[] = { "/bin/sudo", "mv", cwd, "/opt/", NULL };
 
     if (posix_spawn(&pid, "/bin/sudo", NULL, NULL, sudo_mv_argv, environ) != 0) {
@@ -172,8 +189,5 @@ int move() {
         return 1;
     }
 	
-	printf("Moved files into /opt/\n");
-	printf("Dont forget to add to path\n");
-
 	return 0;
 }
