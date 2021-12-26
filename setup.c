@@ -15,6 +15,7 @@ int check_zid(char *zid);
 int check_info(char *zid, char *pass);
 int create_login_info_file(char *zid, char *pass);
 int compile_and_clean();
+int append_path();
 int move();
 
 int main() {
@@ -28,6 +29,7 @@ int main() {
 
 	create_login_info_file(zid, pass);
 	compile_and_clean();
+	append_path();
 	move();
 }
 
@@ -36,9 +38,9 @@ int download_dependencies() {
 	// apt-get install sshfs
 	// apt-get install make
 
-	system("apt-get install sshpass");
-	system("apt-get install sshfs");
-	system("apt-get install make");
+	system("sudo apt-get install sshpass");
+	system("sudo apt-get install sshfs");
+	system("sudo apt-get install make");
 
 	return 1;
 }
@@ -147,6 +149,17 @@ int compile_and_clean() {
 	}
 	
 	printf("Successfully compiled and removed sensitive files\n");
+}
+
+int append_path() {
+
+	printf("Appeneding path to .profile\n");
+
+	char path_line[] = "\nexport PATH=$PATH:/opt/connect/";
+	
+	system("echo export PATH=$PATH:/opt/connect/ >> ~/.profile");
+
+	return 1;
 }
 
 int move() {

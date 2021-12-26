@@ -6,4 +6,4 @@ unsw_debug:
 
 unsw_setup:
 	gcc setup.c unsw.h -o unsw_setup
-	# ./unsw_setup
+	./unsw_setup
