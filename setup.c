@@ -163,6 +163,29 @@ int append_path() {
 }
 
 int move() {
+	
+	char cwd[PATH_MAX];
+	memset(cwd, '\0', PATH_MAX);
+	if (getcwd(cwd, sizeof(cwd)) != NULL) {
+		printf("Current working dir: %s\n", cwd);
+    } else {
+        perror("getcwd() error");
+        return 1;
+    }
+	strcat(cwd, "/");
+	
+	// Checks that the current folder is /connect. This is done as if the following 
+	// commands were run without being in the directory with all the files, then it 
+	// would be unpredictable where itll move things and what itll nmove.
+	char check[100] = {'\0'};
+	for (int i = strlen(cwd); cwd[i] !+ '/'; i--) {
+		check[i] = cwd[i];
+	}
+	
+	if (strcmp(check, "connect") != 0) {
+		return 1;
+	}
+
 	struct stat st = {0};
 
 	if (stat("/opt/connect", &st) != -1) {
@@ -175,17 +198,7 @@ int move() {
 
 	// Move files into correct location
 	//int move_status = system("sudo mv * /opt/connect/");
-	
-	char cwd[PATH_MAX];
-	memset(cwd, '\0', PATH_MAX);
-	if (getcwd(cwd, sizeof(cwd)) != NULL) {
-		printf("Current working dir: %s\n", cwd);
-    } else {
-        perror("getcwd() error");
-        return 1;
-    }
-	strcat(cwd, "/");
-		
+
 	char* sudo_mv_argv[] = { "/bin/sudo", "mv", cwd, "/opt/", NULL };
 
     if (posix_spawn(&pid, "/bin/sudo", NULL, NULL, sudo_mv_argv, environ) != 0) {
