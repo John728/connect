@@ -18,19 +18,34 @@ int compile_and_clean();
 int append_path();
 int move();
 
-int main() {
+int main(int argc, char *argv[]) {
 	
-	download_dependencies();
+	// Standard setup
+	if (argc == 1) {
 
-	char *zid = get_zid();
-	char *pass = get_zpass();
+		download_dependencies();
+
+		char *zid = get_zid();
+		char *pass = get_zpass();
 	
-	// check pass + zid
+		// check pass + zid
 
-	create_login_info_file(zid, pass);
-	compile_and_clean();
-	append_path();
-	move();
+		create_login_info_file(zid, pass);
+		compile_and_clean();
+		append_path();
+		move();
+	
+	// resetting password
+	} else if (strcmp(argv[1], "reset") == 0){
+	
+		char *zid = get_zid();
+		char *pass = get_zpass();
+	
+		// check pass + zid
+
+		create_login_info_file(zid, pass);
+		compile_and_clean();
+	}
 }
 
 int download_dependencies() {
@@ -42,7 +57,7 @@ int download_dependencies() {
 	system("sudo apt-get install sshfs");
 	system("sudo apt-get install make");
 
-	return 1;
+	return 0;
 }
 
 // Returns a string from the user containing their ZID
@@ -178,7 +193,7 @@ int move() {
 	// commands were run without being in the directory with all the files, then it 
 	// would be unpredictable where itll move things and what itll nmove.
 	char check[100] = {'\0'};
-	for (int i = strlen(cwd); cwd[i] !+ '/'; i--) {
+	for (int i = strlen(cwd); cwd[i] != '/'; i--) {
 		check[i] = cwd[i];
 	}
 	
