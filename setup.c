@@ -8,6 +8,7 @@
 
 #include "unsw.h"
 
+int clear_current_files();
 int download_dependencies();
 char *get_zid();
 char *get_zpass();
@@ -20,32 +21,34 @@ int move();
 
 int main(int argc, char *argv[]) {
 	
+    clear_current_files();
+
 	// Standard setup
-	if (argc == 1) {
+	//if (argc == 1) {
 
-		download_dependencies();
+    download_dependencies();
 
-		char *zid = get_zid();
-		char *pass = get_zpass();
-	
-		// check pass + zid
+    char *zid = get_zid();
+    char *pass = get_zpass();
 
-		create_login_info_file(zid, pass);
-		compile_and_clean();
-		append_path();
-		move();
+    // check pass + zid
+
+    create_login_info_file(zid, pass);
+    compile_and_clean();
+    append_path();
+    move();
 	
 	// resetting password
-	} else if (strcmp(argv[1], "reset") == 0){
+	//} else if (strcmp(argv[1], "reset") == 0){
 	
-		char *zid = get_zid();
-		char *pass = get_zpass();
+	//	char *zid = get_zid();
+	//	char *pass = get_zpass();
 	
 		// check pass + zid
 
-		create_login_info_file(zid, pass);
-		compile_and_clean();
-	}
+	//	create_login_info_file(zid, pass);
+	//	compile_and_clean();
+	//}
 }
 
 int download_dependencies() {
@@ -95,6 +98,7 @@ char *get_zpass() {
 	return pass;
 }
 
+// currently not working :(
 int check_zid(char *zid) {
 	return TRUE;
 	if (strlen(zid) != ZID_LENGTH) {
@@ -143,7 +147,7 @@ int create_login_info_file(char *zid, char *pass) {
 		fputc(new_file[i], input_stream);
 	}
 
-    fclose(input_stream);  // optional as close occurs
+    fclose(input_stream); 
 
     return 0;
 }
@@ -164,6 +168,7 @@ int compile_and_clean() {
 	}
 	
 	printf("Successfully compiled and removed sensitive files\n");
+    return 0;
 }
 
 int append_path() {
@@ -187,22 +192,23 @@ int move() {
         perror("getcwd() error");
         return 1;
     }
-	strcat(cwd, "/");
 	
-	// Checks that the current folder is /connect. This is done as if the following 
-	// commands were run without being in the directory with all the files, then it 
-	// would be unpredictable where itll move things and what itll nmove.
-	char check[100] = {'\0'};
-	for (int i = strlen(cwd); cwd[i] != '/'; i--) {
-		check[i] = cwd[i];
-	}
+	// Checks that the current folder is /connect. This is done so that the following 
+    // the following commands arent run in a random folder. Could be bad otherwise.
+	//char check[100] = {'\0'};
+	//for (int i = strlen(cwd); cwd[i] != '/'; i--) {
+	//	check[i] = cwd[i];
+	//}
 	
-	if (strcmp(check, "connect") != 0) {
-		return 1;
-	}
+	//if (strcmp(check, "connect") != 0) {
+	//	return 1;
+	//}
+	
+    strcat(cwd, "/");
 
 	struct stat st = {0};
-
+    
+    // create /opt/connect but if it exists already, then clear out old files
 	if (stat("/opt/connect", &st) != -1) {
 		printf("Removing old files\n");
 		int remove_status = system("sudo rm -rf /opt/connect");
@@ -231,4 +237,10 @@ int move() {
     }
 	
 	return 0;
+}
+
+
+int clear_current_files() {
+    system("sudo rm -rf /opt/connect");
+    return 0;
 }

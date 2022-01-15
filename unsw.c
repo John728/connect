@@ -2,7 +2,7 @@
 
 #include "unsw.h"
 #include "login_info.h"
-#include <cstdio>
+#include <stdio.h>
 
 // Allows the user to clone a folder from their unsw remote home directory to
 // their local machine. Uses rsync to download the directory to the users local.
@@ -357,25 +357,25 @@ char* generate_link_command(char* file_name, char* path)
         return NULL;
     }
 
-    //strcat(command, "echo '");
-    //strcat(command, ZPASS);
-    //strcat(command, "' | sshfs ");
-    //strcat(command, ZID);
-    //strcat(command, "@login.cse.unsw.edu.au:/import/reed/4/");
-    //strcat(command, ZID);
-    //strcat(command, "/");
-    //strcat(command, file_name);
-    //strcat(command, " ");
-    //strcat(command, cwd);
-    //strcat(command, "/");
-    //strcat(command, path);
-    //strcat(command, " -o password_stdin");
-    // printf("Running: %s\n", command);
+    strcat(command, "echo '");
+    strcat(command, ZPASS);
+    strcat(command, "' | sshfs ");
+    strcat(command, ZID);
+    strcat(command, "@login.cse.unsw.edu.au:/import/reed/4/");
+    strcat(command, ZID);
+    strcat(command, "/");
+    strcat(command, file_name);
+    strcat(command, " ");
+    strcat(command, cwd);
+    strcat(command, "/");
+    strcat(command, path);
+    strcat(command, " -o password_stdin");
+    //printf("Running: %s\n", command);
     
     // echo 'ZPASS' | sshfs z5555555@login.cse.edu.au:import/reed/4/z5555555/file_name cwd/path -o password_stdin
-    snprintf(command, sizeof(command), "%s%s%s%s%s%s%s%s%s%s%s%s%s", "echo '", ZPASS,
-            "' | sshfs", ZID, "@login.cse.unsw.edu.au:/import/reed/4/", ZID, "/", 
-            file_name, " ", cwd, "/", path, " -o password_stdin");
+    //snprintf(command, 100 + sizeof(ZPASS), "%s%s%s%s%s%s%s%s%s%s%s%s%s", "echo '", ZPASS,
+    //        "' | sshfs", ZID, "@login.cse.unsw.edu.au:/import/reed/4/", ZID, "/", 
+    //        file_name, " ", cwd, "/", path, " -o password_stdin");
     
     return command;
 }
@@ -385,9 +385,9 @@ int activate_ssh()
 
     printf("Remeber to use \"exit\" to exit ssh\n");
 
-    // z5555555@login.cse.unsw.edu.au = 30 characters
+    // z5555555@login.cse.unsw.edu.au = 30 characters + 1 null character
     char command[30] = { '\0' };
-    snprintf(command, sizeof(command), "%s%s", ZID, "@login.cse.unsw.edu.au");
+    snprintf(command, 31, "%s%s", ZID, "@login.cse.unsw.edu.au");
     //strcat(command, ZID);
     //strcat(command, "@login.cse.unsw.edu.au");
 
