@@ -8,4 +8,4 @@ unsw_setup:
 	gcc setup.c unsw.h -o unsw_setup
 	./unsw_setup
 	sudo rm /opt/connect/unsw_setup
-	Please type cd to return back to your home directory and for the setup to be complete
+	"Please type cd to return back to your home directory and for the setup to be complete"
