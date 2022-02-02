@@ -386,7 +386,10 @@ int activate_ssh()
 
     // z5555555@login.cse.unsw.edu.au = 30 characters + 1 null character
     char command[33] = { '\0' };
-    snprintf(command, 33, "%s%s", ZID, "@login.cse.unsw.edu.au");
+    //snprintf(command, 33, "%s%s", ZID, "@login.cse.unsw.edu.au");
+    strcat(command, ZID);
+    strcat(command, "@login.cse.unsw.edu.au");
+
 
     pid_t pid;
     extern char** environ;
