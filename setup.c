@@ -22,10 +22,6 @@ int move();
 int main(int argc, char *argv[]) {
 	
     clear_current_files();
-
-	// Standard setup
-	//if (argc == 1) {
-
     download_dependencies();
 
     char *zid = get_zid();
@@ -37,18 +33,6 @@ int main(int argc, char *argv[]) {
     compile_and_clean();
     append_path();
     move();
-	
-	// resetting password
-	//} else if (strcmp(argv[1], "reset") == 0){
-	
-	//	char *zid = get_zid();
-	//	char *pass = get_zpass();
-	
-		// check pass + zid
-
-	//	create_login_info_file(zid, pass);
-	//	compile_and_clean();
-	//}
 }
 
 int download_dependencies() {

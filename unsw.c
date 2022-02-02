@@ -6,8 +6,7 @@
 
 // Allows the user to clone a folder from their unsw remote home directory to
 // their local machine. Uses rsync to download the directory to the users local.
-int clone_folder(char* folder_name)
-{
+int clone_folder(char* folder_name) {
 
     pid_t pid;
     extern char** environ;
@@ -42,12 +41,13 @@ int clone_folder(char* folder_name)
     }
 
     printf("successfully cloned <%s>\n", folder_name);
+
+    return 0;
 }
 
 // Reflects the changes the user has made on their local directory to the remote
 // directory.
-int push(char* folder_name)
-{
+int push(char* folder_name) {
 
     // Checks if the user has given a command line argument or not. If the
     // folder name is null, then it gets the folder name from current path
@@ -57,7 +57,8 @@ int push(char* folder_name)
             perror("getcwd() error");
             return 1;
         }
-
+        
+        // Gets current working directory and then takes the last directory
         int not_finished = TRUE;
         for (int i = strlen(cwd) - 1; i >= 0 && not_finished; i--) {
             if (cwd[i] == '/') {
@@ -71,7 +72,7 @@ int push(char* folder_name)
     pid_t pid;
     extern char** environ;
 
-    // Length of the totoal command, all init to '\0'
+    // Length of the total command, all init to '\0'
     char command[67 + strlen(folder_name)];
     memset(command, '\0', 67 + strlen(folder_name));
 
@@ -80,7 +81,8 @@ int push(char* folder_name)
     strcat(command, ZID);
     strcat(command, "/");
     strcat(command, folder_name);
-
+    
+    // sync current folder
     //  rsync -avW -e ssh z5368143@login.cse.unsw.edu.au:/tmp_amd/reed/export/reed/4/ZID/FOLDER .
     char* rsync_argv[] = { "/bin/sshpass", "-p", ZPASS, "rsync", "-a", "--delete", ".", command, NULL };
 
@@ -100,12 +102,12 @@ int push(char* folder_name)
     }
 
     printf("successfully pushed <%s>\n", folder_name);
+    return 0;
 }
 
 // Reflects the changes the user has made on their remote unsw directory to their
 // local directory.
-int pull(char* folder_name)
-{
+int pull(char* folder_name) {
 
     // if folder name is null, then it extracts the currect folder name from thier paths
     char cwd[PATH_MAX];
@@ -159,12 +161,12 @@ int pull(char* folder_name)
     }
 
     printf("successfully pulled <%s>\n", folder_name);
+    return 0;
 }
 
 // Looks in the current directory and finds all directories with the format COMP*
 // It then links and returns the names in a string seporated by a ';'.
-char* get_comp_courses()
-{
+char* get_comp_courses() {
     char* all_comp_courses = malloc(1000);
 
     // Open the current directory
@@ -189,8 +191,7 @@ char* get_comp_courses()
 
 // Loops through all courses in your directory and generates a command to link them to
 // the respective directory in VLAB
-int link_to_unsw(char* file_name)
-{
+int link_to_unsw(char* file_name) {
     printf("Linking to UNSW\n");
 
     if (file_name == NULL) {
@@ -233,8 +234,7 @@ int link_to_unsw(char* file_name)
 }
 
 // Unlinks all COMP course folders in the current directory from VLAB
-int unlink_from_unsw(char* file_name, int delete)
-{
+int unlink_from_unsw(char* file_name, int delete) {
     printf("Unlinking files from UNSW\n");
 
     char* all_comp_courses = get_comp_courses();
@@ -285,8 +285,7 @@ int unlink_from_unsw(char* file_name, int delete)
     return 0;
 }
 
-int send_command(int argc, char* argv[])
-{
+int send_command(int argc, char* argv[]) {
     char command[100] = { '\0' };
 
     // Working on trying to find the correct directory.
@@ -387,9 +386,7 @@ int activate_ssh()
 
     // z5555555@login.cse.unsw.edu.au = 30 characters + 1 null character
     char command[30] = { '\0' };
-    snprintf(command, 31, "%s%s", ZID, "@login.cse.unsw.edu.au");
-    //strcat(command, ZID);
-    //strcat(command, "@login.cse.unsw.edu.au");
+    snprintf(command, 30, "%s%s", ZID, "@login.cse.unsw.edu.au");
 
     pid_t pid;
     extern char** environ;
