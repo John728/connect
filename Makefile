@@ -8,3 +8,4 @@ unsw_setup:
 	gcc setup.c unsw.h -o unsw_setup
 	./unsw_setup
 	sudo rm /opt/connect/unsw_setup
+	cd

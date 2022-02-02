@@ -385,8 +385,8 @@ int activate_ssh()
     printf("Remeber to use \"exit\" to exit ssh\n");
 
     // z5555555@login.cse.unsw.edu.au = 30 characters + 1 null character
-    char command[30] = { '\0' };
-    snprintf(command, 30, "%s%s", ZID, "@login.cse.unsw.edu.au");
+    char command[31] = { '\0' };
+    snprintf(command, 31, "%s%s", ZID, "@login.cse.unsw.edu.au");
 
     pid_t pid;
     extern char** environ;
